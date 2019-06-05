@@ -1,10 +1,10 @@
 from django.shortcuts import render
 from django.http import HttpResponse
-from .models import Song
+from .models import Track
 
 
 def index(request):
-    hot_song_list = Song.objects.order_by('-artist_hotness')[:5]
+    hot_song_list = Track.objects.order_by('-artist_hotness')[:5]
     output = ', '.join(q.title for q in hot_song_list)
     return HttpResponse(output)
 

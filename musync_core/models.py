@@ -9,14 +9,22 @@ from django.db import models
 
 
 class Artist(models.Model):
-    sign_id = models.CharField(max_length=255, blank=True, null=True)
-    name = models.CharField(max_length=1024, blank=True, null=True)
+    name = models.TextField(blank=True, null=True)
     latitude = models.FloatField(blank=True, null=True)
     longitude = models.FloatField(blank=True, null=True)
-    location = models.CharField(max_length=1024, blank=True, null=True)
-    familiarity = models.FloatField(blank=True, null=True)
-    playmeid = models.IntegerField(blank=True, null=True)
-    hotness = models.FloatField(blank=True, null=True)
+    location = models.TextField(blank=True, null=True)
+    active_year_begin = models.DateTimeField(blank=True, null=True)
+    active_year_end = models.DateTimeField(blank=True, null=True)
+    associated_labels = models.TextField(blank=True, null=True)
+    bio = models.TextField(blank=True, null=True)
+    comments = models.IntegerField(blank=True, null=True)
+    created_date = models.DateTimeField(blank=True, null=True)
+    favorites = models.IntegerField(blank=True, null=True)
+    members = models.TextField(blank=True, null=True)
+    related_projects = models.TextField(blank=True, null=True)
+    tags = models.TextField(blank=True, null=True)
+    website = models.TextField(blank=True, null=True)
+    wikipedia_page = models.TextField(blank=True, null=True)
 
     def __str__(self):
         return self.name
@@ -25,14 +33,51 @@ class Artist(models.Model):
         db_table = 'artist'
 
 
-class Song(models.Model):
-    title = models.CharField(max_length=1024)
-    artist = models.ForeignKey(Artist, models.DO_NOTHING, null=True)
-    release = models.CharField(max_length=1024, blank=True, null=True)
-    release_id = models.IntegerField(blank=True, null=True)
-    hotness = models.FloatField(blank=True, null=True)
+class Album(models.Model):
+    title = models.TextField(blank=True, null=True)
+    comments = models.IntegerField(blank=True, null=True)
+    created_date = models.DateTimeField(blank=True, null=True)
+    released_date = models.DateTimeField(blank=True, null=True)
+    engineer = models.TextField(blank=True, null=True)
+    favorites = models.IntegerField(blank=True, null=True)
+    information = models.TextField(blank=True, null=True)
+    listens = models.IntegerField(blank=True, null=True)
+    producer = models.TextField(blank=True, null=True)
+    tags = models.TextField(blank=True, null=True)
+    tracks = models.IntegerField(blank=True, null=True)
+    type = models.TextField(blank=True, null=True)
+
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        db_table = 'album'
+
+
+class Track(models.Model):
+    title = models.TextField(blank=True, null=True)
+    artist = models.ForeignKey(Artist, models.DO_NOTHING, default=-1)
+    album = models.ForeignKey(Album, models.DO_NOTHING, default=-1)
+    set_split = models.TextField(blank=True, null=True)
+    set_subset = models.TextField(blank=True, null=True)
+    bit_rate = models.IntegerField(blank=True, null=True)
+    comments = models.IntegerField(blank=True, null=True)
+    created_date = models.DateTimeField(blank=True, null=True)
+    recorded_date = models.DateTimeField(blank=True, null=True)
     duration = models.FloatField(blank=True, null=True)
-    publish_year = models.IntegerField(blank=True, null=True)
+    favorites = models.IntegerField(blank=True, null=True)
+    genre_top = models.TextField(blank=True, null=True)
+    genres = models.TextField(blank=True, null=True)
+    genres_all = models.TextField(blank=True, null=True)
+    information = models.TextField(blank=True, null=True)
+    interest = models.IntegerField(blank=True, null=True)
+    language_code = models.TextField(blank=True, null=True)
+    license = models.TextField(blank=True, null=True)
+    listens = models.IntegerField(blank=True, null=True)
+    lyricist = models.TextField(blank=True, null=True)
+    number = models.IntegerField(blank=True, null=True)
+    publisher = models.TextField(blank=True, null=True)
+    tags = models.TextField(blank=True, null=True)
     is_cached = models.IntegerField(default=0)
     has_lyric = models.IntegerField(default=0)
     yun_id = models.IntegerField(blank=True, null=True)
@@ -41,7 +86,7 @@ class Song(models.Model):
         return self.title
 
     class Meta:
-        db_table = 'song'
+        db_table = 'track'
 
 
 class User(models.Model):
@@ -67,7 +112,7 @@ class User(models.Model):
 class CollectionList(models.Model):
     user = models.ForeignKey('User', models.DO_NOTHING)
     name = models.CharField(max_length=255)
-    songs = models.ManyToManyField(Song, through='CollectionListHasSong')
+    tracks = models.ManyToManyField(Track, through='CollectionListHasTrack')
     open_state = models.IntegerField(blank=True, null=True, default=1)
 
     def __str__(self):
@@ -77,18 +122,18 @@ class CollectionList(models.Model):
         db_table = 'collection_list'
 
 
-class CollectionListHasSong(models.Model):
+class CollectionListHasTrack(models.Model):
     collection_list = models.ForeignKey(CollectionList, models.DO_NOTHING)
-    song = models.ForeignKey('Song', models.DO_NOTHING)
+    track = models.ForeignKey('Track', models.DO_NOTHING)
     add_time = models.DateTimeField()
 
     class Meta:
-        db_table = 'collection_list_has_song'
+        db_table = 'collection_list_has_track'
 
 
 class CurrentList(models.Model):
     user = models.ForeignKey('User', models.DO_NOTHING)
-    songs = models.ManyToManyField(Song, through='CurrentListHasSong')
+    tracks = models.ManyToManyField(Track, through='CurrentListHasTrack')
     begin_time = models.DateTimeField()
     name = models.CharField(max_length=45, blank=True, null=True)
     is_active = models.IntegerField()
@@ -97,15 +142,15 @@ class CurrentList(models.Model):
         db_table = 'current_list'
 
 
-class CurrentListHasSong(models.Model):
+class CurrentListHasTrack(models.Model):
     current_list = models.ForeignKey(CurrentList, models.DO_NOTHING)
-    song = models.ForeignKey('Song', models.DO_NOTHING)
+    track = models.ForeignKey('Track', models.DO_NOTHING)
     is_playing = models.IntegerField()
     order = models.IntegerField()
     play_time = models.DateTimeField(blank=True, null=True)
 
     class Meta:
-        db_table = 'current_list_has_song'
+        db_table = 'current_list_has_track'
 
 
 class Friend(models.Model):
