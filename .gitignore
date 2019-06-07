@@ -28,4 +28,4 @@ yarn-error.log*
 selenium-debug.log
 */__pycache__/*
 venv/*
-
+__pycache__/*
