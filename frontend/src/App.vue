@@ -11,35 +11,42 @@
 </template>
 
 <script>
-/* eslint-disable */
-  import HelloWorld from './components/HelloWorld.vue'
-  import axios from 'axios'
-  import AudioBar from './components/AudioBar'
+import HelloWorld from './components/HelloWorld.vue'
+import axios from 'axios'
+import AudioBar from './components/AudioBar'
 
-  export default {
-    name: 'app',
-    components: {
-      HelloWorld, AudioBar
-    },
-    methods: {
-      getDetail: function () {
-        axios.get('http://192.168.1.102:8000/musync/5/results/').then(function (response) {
+export default {
+  name: 'app',
+  components: {
+    HelloWorld,
+    AudioBar
+  },
+  methods: {
+    getDetail: function () {
+      axios
+        .get('http://192.168.1.102:8000/musync/5/results/')
+        .then(function (response) {
           alert(response.data)
-        }).catch(function (error) {
+        })
+        .catch(function (error) {
           alert('Error!' + error)
         })
-      }
     }
   }
+}
 </script>
 
+<style lang="scss">
+@import '../static/blue.monday/scss/jplayer.blue.monday.scss';
+</style>
+
 <style>
-  #app {
-    font-family: 'Avenir', Helvetica, Arial, sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    text-align: center;
-    color: #2c3e50;
-    margin-top: 60px;
-  }
+#app {
+  font-family: 'Avenir', Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+  color: #2c3e50;
+  margin-top: 60px;
+}
 </style>
