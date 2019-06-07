@@ -9,7 +9,7 @@
     "test": "npm run unit && npm run e2e",
     "e2e": "node test/e2e/runner.js",
     "lint": "eslint --ext .js,.vue src test/unit test/e2e/specs",
-    "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
+    "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js --host 0.0.0.0",
     "start": "npm run dev",
     "unit": "jest --config test/unit/jest.conf.js --coverage"
   },

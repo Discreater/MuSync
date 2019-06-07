@@ -9,7 +9,7 @@ from django.db import models
 
 
 class Artist(models.Model):
-    name = models.TextField(blank=True, null=True)
+    name = models.CharField(max_length=1000, blank=True, null=True)
     latitude = models.FloatField(blank=True, null=True)
     longitude = models.FloatField(blank=True, null=True)
     location = models.TextField(blank=True, null=True)
@@ -34,7 +34,7 @@ class Artist(models.Model):
 
 
 class Album(models.Model):
-    title = models.TextField(blank=True, null=True)
+    title = models.CharField(max_length=1000, blank=True, null=True)
     comments = models.IntegerField(blank=True, null=True)
     created_date = models.DateTimeField(blank=True, null=True)
     released_date = models.DateTimeField(blank=True, null=True)
@@ -55,7 +55,7 @@ class Album(models.Model):
 
 
 class Track(models.Model):
-    title = models.TextField(blank=True, null=True)
+    title = models.CharField(max_length=1000, blank=True, null=True)
     artist = models.ForeignKey(Artist, models.DO_NOTHING, default=-1)
     album = models.ForeignKey(Album, models.DO_NOTHING, default=-1)
     set_split = models.TextField(blank=True, null=True)
@@ -78,6 +78,7 @@ class Track(models.Model):
     number = models.IntegerField(blank=True, null=True)
     publisher = models.TextField(blank=True, null=True)
     tags = models.TextField(blank=True, null=True)
+    is_short_cached = models.IntegerField(default=0)
     is_cached = models.IntegerField(default=0)
     has_lyric = models.IntegerField(default=0)
     yun_id = models.IntegerField(blank=True, null=True)
