@@ -1,12 +1,24 @@
 <template>
   <div id="app">
-    <div id="test-send">
-      <el-button @click="getDetail">add</el-button>
-    </div>
-    <router-link v-bind:to="'/'">Home</router-link>
-    <router-link v-bind:to="'/about'">About</router-link>
-    <router-view></router-view>
-    <AudioBar></AudioBar>
+    <el-container style="height:100%">
+      <el-container>
+        <el-aside>Aside</el-aside>
+        <el-container>
+          <el-header>Header</el-header>
+          <el-main>
+            <div id="test-send">
+              <el-button @click="getDetail">add</el-button>
+            </div>
+            <router-link v-bind:to="'/'">Home</router-link>
+            <router-link v-bind:to="'/about'">About</router-link>
+            <router-view></router-view>
+          </el-main>
+        </el-container>
+      </el-container>
+      <el-footer height="100">
+        <AudioBar></AudioBar>
+      </el-footer>
+    </el-container>
   </div>
 </template>
 
@@ -41,12 +53,38 @@ export default {
 </style>
 
 <style>
+.el-header {
+  background-color: #b3c0d1;
+  color: #333;
+  line-height: 60px;
+}
+.el-aside {
+  background-color: #d3dce6;
+  color: #333;
+  text-align: center;
+  line-height: 200px;
+}
+.el-footer {
+  padding: 0;
+}
+.el-main {
+  background-color: #e9eef3;
+  color: #333;
+  text-align: center;
+}
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
+  height: 98%;
+  width: 98%;
+  position: absolute;
+}
+html,
+body {
+  width: 98%;
+  height: 98%;
 }
 </style>

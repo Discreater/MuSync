@@ -42,7 +42,8 @@ $jplayer-images-base-url: "/static/blue.monday/image/" !default;
 	background-color:#eee;
 }
 .jp-audio {
-	width:420px;
+	width:100%;
+	margin: 0 auto;
 }
 .jp-audio-stream {
 	width:182px;
@@ -110,11 +111,11 @@ $jplayer-images-base-url: "/static/blue.monday/image/" !default;
 
 .jp-controls-holder {
 	clear: both;
-	width:440px;
+	width:100%;
 	margin:0 auto;
 	position: relative;
 	overflow:hidden;
-	top:-8px; /* This negative value depends on the size of the text in jp-currentTime and jp-duration */
+	top:0px; /* This negative value depends on the size of the text in jp-currentTime and jp-duration */
 }
 
 .jp-interface .jp-controls {
@@ -124,8 +125,8 @@ $jplayer-images-base-url: "/static/blue.monday/image/" !default;
 }
 
 .jp-audio .jp-controls {
-	width: 380px;
-	padding:20px 20px 0 20px;
+	width: 98%;
+	padding:1% 1% 0 1%;
 }
 
 .jp-audio-stream .jp-controls {
@@ -159,6 +160,8 @@ $jplayer-images-base-url: "/static/blue.monday/image/" !default;
 .jp-play {
 	width:40px;
 	height:40px;
+	position: relative;
+	
 }
 
 .jp-play {
@@ -212,13 +215,13 @@ $jplayer-images-base-url: "/static/blue.monday/image/" !default;
 	background-color: #ddd;
 }
 .jp-audio .jp-progress {
-	position: absolute;
+	position: relative;
 	top:32px;
 	height:15px;
 }
 .jp-audio .jp-type-single .jp-progress {
-	left:110px;
-	width:186px;
+	margin: 0 %2;
+	width: 100%;
 }
 .jp-audio .jp-type-playlist .jp-progress {
 	left:166px;
@@ -256,9 +259,9 @@ $jplayer-images-base-url: "/static/blue.monday/image/" !default;
 }
 
 .jp-volume-controls {
-	position:absolute;
+	position: relative;;
 	top:32px;
-	left:308px;
+	float: right;
 	width:200px;
 }
 .jp-audio-stream .jp-volume-controls {
@@ -271,7 +274,7 @@ $jplayer-images-base-url: "/static/blue.monday/image/" !default;
 
 .jp-volume-controls button {
 	display:block;
-	position: absolute;
+	position: relative;
 	overflow:hidden;
 	text-indent:-9999px;
 	border:none;
@@ -284,7 +287,8 @@ $jplayer-images-base-url: "/static/blue.monday/image/" !default;
 	height:15px;
 }
 .jp-volume-max {
-	left:74px;
+	float: right;
+	margin-right: 10%;
 }
 
 .jp-mute {
@@ -307,12 +311,11 @@ $jplayer-images-base-url: "/static/blue.monday/image/" !default;
 }
 
 .jp-volume-bar {
-	position: absolute;
+	position: relative;
 	overflow:hidden;
 	background: url("#{$jplayer-images-base-url}jplayer.blue.monday.jpg") 0 -250px repeat-x;
 	top:5px;
-	left:22px;
-	width:46px;
+	width:100%;
 	height:5px;
 	cursor: pointer;
 }
@@ -353,7 +356,7 @@ $jplayer-images-base-url: "/static/blue.monday/image/" !default;
 .jp-duration {
 	float: right;
 	display:inline;
-	text-align: right;
+	text-align: center;
 	cursor:pointer;
 }
 
