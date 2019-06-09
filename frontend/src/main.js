@@ -6,12 +6,18 @@ import router from './router'
 import './plugins/element.js'
 import 'jplayer'
 
+import BootstrapVue from 'bootstrap-vue'
+import 'bootstrap/dist/css/bootstrap.css'
+import 'bootstrap-vue/dist/bootstrap-vue.css'
+
+Vue.use(BootstrapVue)
+
 Vue.config.productionTip = true
 
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
   router,
-  components: {App},
+  components: { App },
   template: '<App/>'
 })

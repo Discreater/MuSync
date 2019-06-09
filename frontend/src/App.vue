@@ -1,24 +1,16 @@
 <template>
   <div id="app">
-    <el-container style="height:100%">
-      <el-container>
-        <el-aside>Aside</el-aside>
-        <el-container>
-          <el-header>Header</el-header>
-          <el-main>
-            <div id="test-send">
-              <el-button @click="getDetail">add</el-button>
-            </div>
-            <router-link v-bind:to="'/'">Home</router-link>
-            <router-link v-bind:to="'/about'">About</router-link>
-            <router-view></router-view>
-          </el-main>
-        </el-container>
-      </el-container>
-      <el-footer height="100">
-        <AudioBar></AudioBar>
-      </el-footer>
-    </el-container>
+    <div class="header">Header</div>
+    <div class="main">
+      <div id="test-send">
+        <el-button @click="getDetail">add</el-button>
+      </div>
+      <router-link v-bind:to="'/'">Home</router-link>
+      <router-link v-bind:to="'/about'">About</router-link>
+      <router-view></router-view>
+    </div>
+    <MusicList class="float-list"></MusicList>
+    <AudioBar></AudioBar>
   </div>
 </template>
 
@@ -26,12 +18,14 @@
 import HelloWorld from './components/HelloWorld.vue'
 import axios from 'axios'
 import AudioBar from './components/AudioBar'
+import MusicList from './components/MusicList'
 
 export default {
   name: 'app',
   components: {
     HelloWorld,
-    AudioBar
+    AudioBar,
+    MusicList
   },
   methods: {
     getDetail: function () {
@@ -53,24 +47,36 @@ export default {
 </style>
 
 <style>
-.el-header {
+.el-popover {
+  min-width: 64px;
+}
+.float-list{
+  position: absolute;
+  bottom: 150px;
+  right: 10px;
+}
+body.main-body {
+  overflow: hidden;
+}
+.header {
   background-color: #b3c0d1;
   color: #333;
-  line-height: 60px;
+  position: fixed;
+  width: 100%;
+  top: 0;
+  z-index: 1500;
+  height: 80px;
 }
-.el-aside {
-  background-color: #d3dce6;
-  color: #333;
-  text-align: center;
-  line-height: 200px;
-}
-.el-footer {
+.main {
+  overflow: auto;
   padding: 0;
-}
-.el-main {
-  background-color: #e9eef3;
-  color: #333;
-  text-align: center;
+  margin-top: 0;
+  min-height: auto;
+  position: absolute;
+  top: 80px;
+  bottom: 94px;
+  width: 100%;
+  background-color: #b3c0d1;
 }
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
@@ -78,13 +84,17 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  height: 98%;
-  width: 98%;
+  height: 100%;
+  width: 100%;
   position: absolute;
 }
 html,
 body {
-  width: 98%;
-  height: 98%;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
 }
 </style>
