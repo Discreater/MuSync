@@ -10,13 +10,35 @@ import BootstrapVue from 'bootstrap-vue'
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 
+import global from './components/Common'
+
+import Vuex from 'vuex'
+
+Vue.use(Vuex)
+
 Vue.use(BootstrapVue)
+Vue.prototype.COMMON = global
 
 Vue.config.productionTip = true
+
+const store = new Vuex.Store({
+  state: {
+    is_logined: false
+  },
+  mutations: {
+    login (state) {
+      state.is_logined = true
+    },
+    logout (state) {
+      state.is_logined = false
+    }
+  }
+})
 
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
+  store,
   router,
   components: { App },
   template: '<App/>'

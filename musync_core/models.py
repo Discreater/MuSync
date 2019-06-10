@@ -99,8 +99,8 @@ class User(models.Model):
     gender = models.CharField(max_length=45, blank=True, null=True)
     birth_date = models.DateTimeField(blank=True, null=True)
     signature = models.CharField(max_length=511, blank=True, null=True)
-    is_online = models.IntegerField()
-    is_stealth = models.IntegerField()
+    is_online = models.IntegerField(default=1)
+    is_stealth = models.IntegerField(default=0)
     friends = models.ManyToManyField('self', through='Friend', symmetrical=False)
 
     def __str__(self):

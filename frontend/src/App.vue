@@ -1,6 +1,8 @@
 <template>
   <div id="app">
-    <div class="header">Header</div>
+    <div class="header">
+      <HeadBar></HeadBar>
+    </div>
     <div class="main">
       <div id="test-send">
         <el-button @click="getDetail">add</el-button>
@@ -19,13 +21,15 @@ import HelloWorld from './components/HelloWorld.vue'
 import axios from 'axios'
 import AudioBar from './components/AudioBar'
 import MusicList from './components/MusicList'
+import HeadBar from './components/HeadBar'
 
 export default {
   name: 'app',
   components: {
     HelloWorld,
     AudioBar,
-    MusicList
+    MusicList,
+    HeadBar
   },
   methods: {
     getDetail: function () {
@@ -47,10 +51,16 @@ export default {
 </style>
 
 <style>
-.el-popover {
-  min-width: 64px;
+.el-popover__title {
+  text-align: center;
 }
-.float-list{
+.el-slider.is-vertical .el-slider__runway {
+  margin: 0;
+}
+.el-popover {
+  min-width: 0px;
+}
+.float-list {
   position: absolute;
   bottom: 150px;
   right: 10px;
@@ -59,8 +69,6 @@ body.main-body {
   overflow: hidden;
 }
 .header {
-  background-color: #b3c0d1;
-  color: #333;
   position: fixed;
   width: 100%;
   top: 0;

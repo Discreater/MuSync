@@ -18,6 +18,8 @@ from django.urls import path, include
 from django.views.generic.base import TemplateView
 
 urlpatterns = [
+    path('login', include('login.urls')),
+    path('register', include('register.urls')),
     path('index/', TemplateView.as_view(template_name="index.html")),
     path('register/', include('register.urls')),
     path('musync/', include('musync_core.urls')),

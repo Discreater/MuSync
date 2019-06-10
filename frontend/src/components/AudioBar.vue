@@ -29,6 +29,7 @@
     </div>
     <div class="audio-player">
       <div class="audio-img">
+        <!-- music图片 -->
         <img :src="audio.icon" style="position: relative; height: 80px; width:80px">
       </div>
       <div class="audio-controls">
@@ -53,13 +54,14 @@
         </div>
         <div class="audio-volume" id="audio-vulume">
           <el-popover class="volume-popover" placement="top" width="100%">
-            <el-button @click="initVolumeSlider" class="el-icon-s-operation" slot="reference" size="small" type="success"></el-button>
-            <el-slider
-              class="volume-slider"
-              v-model="sliderVolume"
-              vertical
-              height="60px"
-            ></el-slider>
+            <el-button
+              @click="initVolumeSlider"
+              class="el-icon-s-operation"
+              slot="reference"
+              size="small"
+              type="success"
+            ></el-button>
+            <el-slider class="volume-slider" v-model="sliderVolume" vertical height="60px"></el-slider>
           </el-popover>
         </div>
       </div>
@@ -258,8 +260,5 @@ export default {
   width: 100%;
   height: 94px;
   bottom: 0;
-}
-.volume-slider {
-  width: 100%;
 }
 </style>

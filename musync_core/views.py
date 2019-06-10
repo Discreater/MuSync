@@ -14,6 +14,7 @@ def detail(request, song_id):
 
 
 def results(request, song_id):
+    print(request.session.session_key)
     response = "You're looking at the results of song %s."
     return HttpResponse(response % song_id)
 
