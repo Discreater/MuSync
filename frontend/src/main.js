@@ -23,7 +23,8 @@ Vue.config.productionTip = true
 
 const store = new Vuex.Store({
   state: {
-    is_logined: false
+    is_logined: false,
+    show_friend: true
   },
   mutations: {
     login (state) {
@@ -31,6 +32,9 @@ const store = new Vuex.Store({
     },
     logout (state) {
       state.is_logined = false
+    },
+    toggleShowFriend (state) {
+      state.show_friend = !state.show_friend
     }
   }
 })

@@ -4,12 +4,18 @@
       <HeadBar></HeadBar>
     </div>
     <div class="main">
-      <div id="test-send">
-        <el-button @click="getDetail">add</el-button>
+      <div class="left-bar">
+        <transition name="el-fade-in">
+          <Friend v-show="show_friend"></Friend>
+        </transition>
+        <i
+          :class="show_friend ? 'el-icon-arrow-left' : 'el-icon-arrow-right'"
+          @click="$store.commit('toggleShowFriend')"
+        ></i>
       </div>
-      <router-link v-bind:to="'/'">Home</router-link>
-      <router-link v-bind:to="'/about'">About</router-link>
-      <router-view></router-view>
+      <div class="main-display">
+        <router-view></router-view>
+      </div>
     </div>
     <MusicList class="float-list"></MusicList>
     <AudioBar></AudioBar>
@@ -18,10 +24,10 @@
 
 <script>
 import HelloWorld from './components/HelloWorld.vue'
-import axios from 'axios'
 import AudioBar from './components/AudioBar'
 import MusicList from './components/MusicList'
 import HeadBar from './components/HeadBar'
+import Friend from './components/Friend'
 
 export default {
   name: 'app',
@@ -29,26 +35,16 @@ export default {
     HelloWorld,
     AudioBar,
     MusicList,
-    HeadBar
+    HeadBar,
+    Friend
   },
-  methods: {
-    getDetail: function () {
-      axios
-        .get('http://192.168.1.102:8000/musync/5/results/')
-        .then(function (response) {
-          alert(response.data)
-        })
-        .catch(function (error) {
-          alert('Error!' + error)
-        })
+  computed: {
+    show_friend: function () {
+      return this.$store.state.show_friend
     }
   }
 }
 </script>
-
-<style lang="scss">
-@import '../static/blue.monday/scss/jplayer.blue.monday.scss';
-</style>
 
 <style>
 .el-popover__title {
@@ -74,6 +70,8 @@ body.main-body {
   top: 0;
   z-index: 1500;
   height: 80px;
+  border-bottom-style: solid;
+  border-bottom-color: #c5c5c5;
 }
 .main {
   overflow: auto;
@@ -85,6 +83,16 @@ body.main-body {
   bottom: 94px;
   width: 100%;
   background-color: #b3c0d1;
+  display: flex;
+  justify-content: flex-start;
+}
+.left-bar {
+  display: flex;
+  justify-content: flex-start;
+}
+.main-display {
+  background-color: #379de6;
+  flex-grow: 1;
 }
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;

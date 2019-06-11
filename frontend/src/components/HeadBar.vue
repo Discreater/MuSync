@@ -5,10 +5,10 @@
     </div>
     <div class="head-search test">
       <div class="search-frame test">
-        <el-input placeholder="请输入内容" v-model="input"></el-input>
+        <el-input placeholder="请输入内容" v-model="search_input"></el-input>
       </div>
       <div class="search-button test">
-        <el-button class="el-icon-search" circle type="warning"></el-button>
+        <el-button class="el-icon-search" circle type="warning" @click="search"></el-button>
       </div>
     </div>
     <div class="head-user-info test">
@@ -121,7 +121,7 @@ export default {
         blank: true,
         blankColor: '#cc9'
       },
-      input: '',
+      search_input: '',
       login_form_visible: false,
       register_form_visible: false,
       login_form: {
@@ -167,8 +167,11 @@ export default {
       return this.$store.state.is_logined
     }
   },
-  // TODO 登录后更新数据库登录状态
   methods: {
+    search: function () {
+      // TODO axios GET
+      this.$router.push('/search')
+    },
     onLoginButton: function () {
       this.login_form_visible = !this.login_form_visible
       this.register_form_visible = false
@@ -306,7 +309,7 @@ export default {
   created: function () {
     if (localStorage.user_id) {
       if (localStorage.name && localStorage.password) {
-        axios.post(this.COMMON.httpURL + 'login', { name: localStorage.name, password: localStorage.password })
+        axios.post(this.COMMON.httpURL + 'user/login', { name: localStorage.name, password: localStorage.password })
           .then(response => {
             localStorage.user_id = response.data.user_id
             this.$store.commit('login')
