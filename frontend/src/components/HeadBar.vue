@@ -90,7 +90,6 @@
 
 <script>
 import axios from 'axios'
-import { resolve } from 'url'
 
 function errorMessage (vm, msg) {
   vm.$message({
@@ -168,6 +167,7 @@ export default {
       return this.$store.state.is_logined
     }
   },
+  // TODO 登录后更新数据库登录状态
   methods: {
     onLoginButton: function () {
       this.login_form_visible = !this.login_form_visible
@@ -183,7 +183,7 @@ export default {
       this.$refs['login_form'].validate((valid) => {
         if (valid) {
           // api请求登录
-          axios.post(this.COMMON.httpURL + 'login', this.login_form)
+          axios.post(this.COMMON.httpURL + 'user/login', this.login_form)
             .then(response => {
               localStorage.user_id = response.data.user_id
               localStorage.name = this.login_form.name
@@ -287,7 +287,6 @@ export default {
     },
     logout: function () {
       // TODO 返回正确时才注销
-      axios.post(this.COMMON.httpURL + 'logout')
       localStorage.removeItem('user_id')
       localStorage.removeItem('name')
       localStorage.removeItem('password')
@@ -295,12 +294,24 @@ export default {
       this.register_form.email = ''
       this.register_form.password = ''
       this.$store.commit('logout')
+      this.$message({
+        showClose: true,
+        message: '注销成功',
+        type: 'success',
+        duration: 1500
+      })
+      axios.delete(this.COMMON.httpURL + 'user/logout')
     }
   },
   created: function () {
     if (localStorage.user_id) {
-      // TODO axios 登录
-      this.$store.commit('login')
+      if (localStorage.name && localStorage.password) {
+        axios.post(this.COMMON.httpURL + 'login', { name: localStorage.name, password: localStorage.password })
+          .then(response => {
+            localStorage.user_id = response.data.user_id
+            this.$store.commit('login')
+          })
+      }
     }
   }
 }

@@ -3,6 +3,7 @@ from django.views.decorators.csrf import csrf_exempt
 from musync_core.models import User
 import json
 
+
 @csrf_exempt
 def login(request):
     if request.method == 'POST':
@@ -27,3 +28,14 @@ def login(request):
     else:
         resp = {'error': 'method'}
         return HttpResponse(json.dumps(resp), content_type="application/json", status=401)
+
+
+@csrf_exempt
+def logout(request):
+    if request.method == 'DELETE':
+        if 'user_id' in request.session:
+            # 删除整个会话
+            request.session.flush()
+    return HttpResponse()
+
+
