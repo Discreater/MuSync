@@ -157,7 +157,7 @@ class CurrentListHasTrack(models.Model):
 class Friend(models.Model):
     user = models.ForeignKey('User', models.DO_NOTHING, related_name='from_user')
     friend = models.ForeignKey('User', models.DO_NOTHING, related_name='to_friend')
-    begin_time = models.DateTimeField()
+    begin_time = models.DateTimeField(auto_now_add=True)
     musync_time = models.IntegerField(default=0)
     tag = models.CharField(max_length=1023, blank=True, null=True)
     remark = models.CharField(max_length=45, blank=True, null=True)

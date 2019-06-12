@@ -12,7 +12,6 @@ def login(request):
             if 'name' in dic and 'password' in dic:
                 user = User.objects.get(name=dic['name'])
                 if user.password == dic['password']:
-                    print(request.session.session_key)
                     resp = {'status': 'success', 'user_id': user.id}
                     request.session['user_id'] = user.id
                     return HttpResponse(json.dumps(resp), content_type="application/json")

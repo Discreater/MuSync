@@ -59,7 +59,7 @@ export default {
 .float-list {
   position: absolute;
   bottom: 150px;
-  right: 10px;
+  right: 30px;
 }
 body.main-body {
   overflow: hidden;

@@ -289,7 +289,6 @@ export default {
       })
     },
     logout: function () {
-      // TODO 返回正确时才注销
       localStorage.removeItem('user_id')
       localStorage.removeItem('name')
       localStorage.removeItem('password')

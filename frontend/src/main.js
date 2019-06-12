@@ -24,7 +24,8 @@ Vue.config.productionTip = true
 const store = new Vuex.Store({
   state: {
     is_logined: false,
-    show_friend: true
+    show_friend: true,
+    html_height: 0
   },
   mutations: {
     login (state) {
@@ -35,9 +36,16 @@ const store = new Vuex.Store({
     },
     toggleShowFriend (state) {
       state.show_friend = !state.show_friend
+    },
+    changeHeight (state, height) {
+      state.html_height = height
     }
   }
 })
+
+window.onresize = function () {
+  store.commit('changeHeight', document.body.clientHeight)
+}
 
 /* eslint-disable no-new */
 new Vue({
