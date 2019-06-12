@@ -169,8 +169,13 @@ export default {
   },
   methods: {
     search: function () {
-      // TODO axios GET
-      this.$router.push('/search')
+      this.$router.push({
+        path: '/search',
+        query: {
+          q: this.search_input,
+          p: 1
+        }
+      })
     },
     onLoginButton: function () {
       this.login_form_visible = !this.login_form_visible

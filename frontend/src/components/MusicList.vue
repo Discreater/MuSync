@@ -6,7 +6,7 @@
         <el-table-column prop="full_title" label="歌名" width="200"></el-table-column>
         <el-table-column prop="full_artist" label="歌手"></el-table-column>
       </el-table>
-      <el-button class="el-icon-s-fold" slot="reference"></el-button>
+      <el-button class="el-icon-s-fold" slot="reference" type="info"></el-button>
     </el-popover>
   </div>
 </template>

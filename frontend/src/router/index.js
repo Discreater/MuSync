@@ -14,6 +14,7 @@ export default new Router({
     },
     {
       path: '/search',
+      name: 'Search',
       component: Search
     }
   ]

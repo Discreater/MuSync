@@ -18,6 +18,7 @@ from django.urls import path, include
 from django.views.generic.base import TemplateView
 
 urlpatterns = [
+    path('musics/', include('music.urls')),
     path('friend/', include('friend.urls')),
     path('user/', include('login.urls')),
     path('register', include('register.urls')),

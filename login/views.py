@@ -2,6 +2,7 @@ from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from musync_core.models import User
 import json
+from django.core.exceptions import ObjectDoesNotExist
 
 
 @csrf_exempt
@@ -21,7 +22,7 @@ def login(request):
             else:
                 resp = {'error': 'parameter'}
                 return HttpResponse(json.dumps(resp), content_type="application/json", status=401)
-        except:
+        except ObjectDoesNotExist:
             resp = {'error': 'name'}
             return HttpResponse(json.dumps(resp), content_type="application/json", status=401)
     else:

@@ -152,8 +152,6 @@ export default {
     // 当加载语音流元数据完成后，会触发该事件的回调函数
     // 语音元数据主要是语音的长度之类的数据
     onLoadedmetadata (res) {
-      console.log('loadedmetadata')
-      console.log(res)
       this.audio.maxTime = parseInt(res.target.duration)
     },
     // 当timeupdate事件大概每秒一次，用来更新音频流的当前播放时间
@@ -210,6 +208,9 @@ export default {
   border-bottom-style: solid;
   border-bottom-width: 1px;
   border-bottom-color: #c5c5c5;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #c5c5c5;
 }
 .audio-controls .el-button + .el-button {
   margin-left: 1%;

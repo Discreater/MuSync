@@ -6,12 +6,15 @@
     <div class="main">
       <div class="left-bar">
         <transition name="el-fade-in">
-          <Friend v-show="show_friend"></Friend>
+          <Friend v-show="is_logined && show_friend"></Friend>
         </transition>
+        <div style="width:20px; align-self: center;box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04)">
         <i
+          style="width: 20px"
           :class="show_friend ? 'el-icon-arrow-left' : 'el-icon-arrow-right'"
           @click="$store.commit('toggleShowFriend')"
-        ></i>
+        >好友列表</i>
+        </div>
       </div>
       <div class="main-display">
         <router-view></router-view>
@@ -41,6 +44,9 @@ export default {
   computed: {
     show_friend: function () {
       return this.$store.state.show_friend
+    },
+    is_logined: function () {
+      return this.$store.state.is_logined
     }
   }
 }
@@ -82,7 +88,6 @@ body.main-body {
   top: 80px;
   bottom: 94px;
   width: 100%;
-  background-color: #b3c0d1;
   display: flex;
   justify-content: flex-start;
 }
@@ -91,8 +96,8 @@ body.main-body {
   justify-content: flex-start;
 }
 .main-display {
-  background-color: #379de6;
   flex-grow: 1;
+  margin: 10px
 }
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;

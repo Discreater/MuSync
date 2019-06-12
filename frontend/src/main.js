@@ -25,9 +25,15 @@ const store = new Vuex.Store({
   state: {
     is_logined: false,
     show_friend: true,
-    html_height: 0
+    html_height: 0,
+    searchReq: '',
+    searchRes: []
   },
   mutations: {
+    search (state, {req, res}) {
+      state.searchReq = req
+      state.searchRes = res
+    },
     login (state) {
       state.is_logined = true
     },
