@@ -65,6 +65,7 @@ class Track(models.Model):
     created_date = models.DateTimeField(blank=True, null=True)
     recorded_date = models.DateTimeField(blank=True, null=True)
     duration = models.FloatField(blank=True, null=True)
+    short_duration = models.FloatField(blank=True, null=True)
     favorites = models.IntegerField(blank=True, null=True)
     genre_top = models.TextField(blank=True, null=True)
     genres = models.TextField(blank=True, null=True)
@@ -135,9 +136,9 @@ class CollectionListHasTrack(models.Model):
 class CurrentList(models.Model):
     user = models.ForeignKey('User', models.DO_NOTHING)
     tracks = models.ManyToManyField(Track, through='CurrentListHasTrack')
-    begin_time = models.DateTimeField()
+    begin_time = models.DateTimeField(blank=True, null=True)
     name = models.CharField(max_length=45, blank=True, null=True)
-    is_active = models.IntegerField()
+    is_active = models.IntegerField(default=1)
 
     class Meta:
         db_table = 'current_list'
@@ -146,9 +147,10 @@ class CurrentList(models.Model):
 class CurrentListHasTrack(models.Model):
     current_list = models.ForeignKey(CurrentList, models.DO_NOTHING)
     track = models.ForeignKey('Track', models.DO_NOTHING)
-    is_playing = models.IntegerField()
+    is_playing = models.IntegerField(default=0)
     order = models.IntegerField()
     play_time = models.DateTimeField(blank=True, null=True)
+    is_short = models.IntegerField(default=0)
 
     class Meta:
         db_table = 'current_list_has_track'

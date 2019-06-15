@@ -16,3 +16,5 @@ def get_friends(request, user_id):
             return JsonResponse({'friends': list(friends)})
         except ObjectDoesNotExist:
             return JsonResponse({'error': '用户不存在'}, status=401)
+    else:
+        return JsonResponse({'error': '方法错误'}, status=401)

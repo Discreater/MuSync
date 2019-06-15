@@ -15,7 +15,7 @@
         <b-table :items="music.musicData" :fields="music.fields" fixed hover>
           <template slot="actions" slot-scope="row">
             <el-popover placement="top" title="下一首播放" trigger="hover">
-              <el-button @click="addToCurrentList(row.item)" slot="reference" icon="el-icon-circle-plus" circle=""></el-button>
+              <el-button @click="addToNextPlay(row.item)" slot="reference" icon="el-icon-circle-plus" circle=""></el-button>
             </el-popover>
           </template>
         </b-table>
@@ -96,7 +96,7 @@ export default {
       })
     },
     addToNextPlay: function (music) {
-      axios.post(this.COMMON.httpURL + 'list/current/next', {'music_id': music.id, 'user_id': localStorage.user_id})
+      axios.post(this.COMMON.httpURL + 'lists/current/next', {'music_id': music.id, 'user_id': parseInt(localStorage.user_id), 'short': 1})
         .then(response => {
           // TODO 添加下一首播放
         })

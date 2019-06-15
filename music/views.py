@@ -29,4 +29,5 @@ def search(request):
         else:
             return JsonResponse({'error', '无搜索内容'}, status=401)
     else:
+
         return JsonResponse({'error', '方法错误'}, status=401)
