@@ -7,6 +7,7 @@
       @play="onPlay"
       @timeupdate="onTimeupdate"
       @loadedmetadata="onLoadedmetadata"
+      @ended="nextMusic"
     ></audio>
     <!-- 音频播放控件 -->
     <div class="music-info">
@@ -35,7 +36,7 @@
       <div class="audio-controls">
         <el-button :class="button_icon" @click="startPlayOrPause" circle type="primary"></el-button>
         <el-tooltip effect="dark" content="下一首" placement="top">
-          <el-button class="el-icon-caret-right" circle size="small"></el-button>
+          <el-button @click="nextMusic" class="el-icon-caret-right" circle size="small"></el-button>
         </el-tooltip>
       </div>
       <div class="audio-progress">
@@ -70,6 +71,8 @@
 </template>
 
 <script>
+import axios from 'axios'
+
 // 整数格式化成 分：秒
 function realFormatSecond (second) {
   var secondType = typeof second
@@ -85,14 +88,16 @@ function realFormatSecond (second) {
     return '00:00'
   }
 }
+
 export default {
   name: 'AudioBar',
   data () {
     return {
       audio: {
-        full_title: 'さくら~あなたに出会えてよかった~[清明樱花祭]',
-        full_artist: 'RSP',
-        file: '/static/RSP-さくら~あなたに出会えてよかった~[清明樱花祭].mp3',
+        track: [],
+        full_title: '',
+        full_artist: '',
+        file: '',
         playing: false,
         icon: '/static/logo.png',
         currentTime: 0,
@@ -114,14 +119,41 @@ export default {
     },
     pre_artist: function () {
       return this.audio.full_artist.substring(0, 80)
+    },
+    is_logined: function () {
+      return this.$store.state.is_logined
+    },
+    list: function () {
+      return this.$store.state.current_list
+    },
+    list_state: function () {
+      return this.$store.state.list_state
     }
   },
   watch: {
     sliderVolume: function (val) {
       this.$refs.audio.volume = val / 100
+    },
+    list_state: function (val) {
+      if (val !== undefined && Object.keys(val).length !== 0) {
+        let id = val.track_id
+        let mid = parseInt(id / 1000)
+        id = '000000' + id
+        id = id.substring(id.length - 6)
+        mid = '000' + mid
+        mid = mid.substring(mid.length - 3)
+        this.audio.file = 'http://232q591s16.imwork.net:50100/music/' + mid + '/' + id + '_s.mp3'
+        this.$refs.audio.load()
+      }
     }
   },
   methods: {
+    nextMusic () {
+      axios.get(this.COMMON.httpURL + 'lists/current/next?user_id=' + localStorage.user_id)
+        .then(responese => {
+          this.$store.commit('getCurrentList', this)
+        })
+    },
     // 拖动进度条，改变当前时间，index是进度条改变时的回调函数的参数0-100之间，需要换算成实际时间
     changeCurrentTime (index) {
       this.$refs.audio.currentTime = parseInt(index / 100 * this.audio.maxTime)
@@ -131,14 +163,20 @@ export default {
     },
     // 控制音频的播放与暂停
     startPlayOrPause () {
-      return this.audio.playing ? this.pause() : this.play()
+      this.audio.playing ? this.pause() : this.play()
     },
     // 播放音频
     play () {
+      if (this.list.length !== 0) {
+        axios.get(this.COMMON.httpURL + 'lists/current/play?user_id=' + localStorage.user_id)
+      }
       this.$refs.audio.play()
     },
     // 暂停音频
     pause () {
+      if (this.list.length !== 0) {
+        axios.get(this.COMMON.httpURL + 'lists/current/pause?user_id=' + localStorage.user_id)
+      }
       this.$refs.audio.pause()
     },
     // 当音频播放
@@ -153,6 +191,35 @@ export default {
     // 语音元数据主要是语音的长度之类的数据
     onLoadedmetadata (res) {
       this.audio.maxTime = parseInt(res.target.duration)
+      let beginTime = Date.parse(this.list_state.begin_time)
+      let currentTime
+      if (this.list_state.is_active === 0) {
+        let pauseTime = Date.parse(this.list_state.pause_time)
+        currentTime = parseInt((pauseTime - beginTime) / 1000)
+      } else {
+        currentTime = parseInt((new Date() - beginTime) / 1000)
+      }
+      if (currentTime > this.audio.maxTime) {
+        currentTime = this.audio.maxTime
+        this.nextMusic()
+      }
+      this.$refs.audio.currentTime = currentTime
+      this.audio.currentTime = currentTime
+      this.sliderTime = currentTime / this.audio.maxTime * 100
+      if (this.list_state.is_active === 1) {
+        this.audio.playing = true
+        this.play()
+      } else {
+        this.audio.playing = false
+        this.pause()
+      }
+      let order = this.list_state.playing_order
+      for (let k of this.list) {
+        if (k.order === order) {
+          this.audio.full_title = k.track__title
+          this.audio.full_artist = k.track__artist__name
+        }
+      }
     },
     // 当timeupdate事件大概每秒一次，用来更新音频流的当前播放时间
     // 当音频当前时间改变后，进度条也要改变

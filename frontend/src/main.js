@@ -13,6 +13,7 @@ import 'bootstrap-vue/dist/bootstrap-vue.css'
 import global from './components/Common'
 
 import Vuex from 'vuex'
+import axios from 'axios'
 
 Vue.use(Vuex)
 
@@ -24,13 +25,15 @@ Vue.config.productionTip = true
 const store = new Vuex.Store({
   state: {
     is_logined: false,
-    show_friend: true,
+    show_friend: false,
     html_height: 0,
     searchReq: '',
-    searchRes: []
+    searchRes: [],
+    current_list: [],
+    list_state: {}
   },
   mutations: {
-    search (state, {req, res}) {
+    search (state, { req, res }) {
       state.searchReq = req
       state.searchRes = res
     },
@@ -45,6 +48,42 @@ const store = new Vuex.Store({
     },
     changeHeight (state, height) {
       state.html_height = height
+    },
+    getCurrentList (state, vm) {
+      if (localStorage.user_id) {
+        axios
+          .get(
+            vm.COMMON.httpURL +
+            'lists/current/all?user_id=' +
+            localStorage.user_id
+          )
+          .then(response => {
+            if (JSON.stringify(state.current_list) !== JSON.stringify(response.data.list)) {
+              state.current_list = response.data.list
+            }
+            if (JSON.stringify(state.list_state) !== JSON.stringify(response.data.state)) {
+              state.list_state = response.data.state
+            }
+          })
+          .catch(error => {
+            if (error.response) {
+              vm.$message({
+                showClose: true,
+                message: error.response.data.error,
+                type: 'error',
+                duration: 2000
+              })
+            } else {
+              vm.$message({
+                showClose: true,
+                message: '未知错误',
+                type: 'error',
+                duration: 2000
+              })
+              console.log(error)
+            }
+          })
+      }
     }
   }
 })

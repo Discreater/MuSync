@@ -137,8 +137,10 @@ class CurrentList(models.Model):
     user = models.ForeignKey('User', models.DO_NOTHING)
     tracks = models.ManyToManyField(Track, through='CurrentListHasTrack')
     begin_time = models.DateTimeField(blank=True, null=True)
+    pause_time = models.DateTimeField(blank=True, null=True)
     name = models.CharField(max_length=45, blank=True, null=True)
     is_active = models.IntegerField(default=1)
+    playing_order = models.IntegerField(default=0)
 
     class Meta:
         db_table = 'current_list'
@@ -147,9 +149,7 @@ class CurrentList(models.Model):
 class CurrentListHasTrack(models.Model):
     current_list = models.ForeignKey(CurrentList, models.DO_NOTHING)
     track = models.ForeignKey('Track', models.DO_NOTHING)
-    is_playing = models.IntegerField(default=0)
     order = models.IntegerField()
-    play_time = models.DateTimeField(blank=True, null=True)
     is_short = models.IntegerField(default=0)
 
     class Meta:

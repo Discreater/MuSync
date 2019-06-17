@@ -1,7 +1,8 @@
 <template>
   <div class="head-bar">
     <div class="head-icon test">
-      <img src="/static/logo.png" style="height: 80px; width: 80px">
+      <span style="font-size: 40px;color: #562222;text-shadow: 4px 5px #a96767;">MuSync</span>
+      <el-button style="margin-left: 9px" @click="refresh" class="el-icon-refresh" circle type="primary"></el-button>
     </div>
     <div class="head-search test">
       <div class="search-frame test">
@@ -168,6 +169,9 @@ export default {
     }
   },
   methods: {
+    refresh: function () {
+      this.$store.commit('getCurrentList', this)
+    },
     search: function () {
       this.$router.push({
         path: '/search',
@@ -205,6 +209,7 @@ export default {
               })
               this.logining = false
               this.login_form_visible = false
+              this.$store.commit('getCurrentList', this)
             })
             .catch(error => {
               if (error.response) {
@@ -242,7 +247,7 @@ export default {
       this.$refs['register_form'].validate((valid) => {
         if (valid) {
           // api请求注册
-          axios.post(this.COMMON.httpURL + 'register', this.register_form)
+          axios.post(this.COMMON.httpURL + 'register/', this.register_form)
             .then(response => {
               localStorage.user_id = response.data.user_id
               localStorage.name = this.register_form.name
@@ -318,6 +323,7 @@ export default {
             localStorage.user_id = response.data.user_id
             this.$store.commit('login')
           })
+        this.$store.commit('getCurrentList', this)
       }
     }
   }

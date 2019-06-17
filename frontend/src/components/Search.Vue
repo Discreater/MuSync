@@ -14,8 +14,20 @@
         ></el-pagination>
         <b-table :items="music.musicData" :fields="music.fields" fixed hover>
           <template slot="actions" slot-scope="row">
+            <el-button
+              circle
+              icon="el-icon-video-play"
+              :disabled="row.item.is_short_cached==0?true: false"
+              @click="playNow(row.item)"
+            ></el-button>
             <el-popover placement="top" title="下一首播放" trigger="hover">
-              <el-button @click="addToNextPlay(row.item)" slot="reference" icon="el-icon-circle-plus" circle=""></el-button>
+              <el-button
+                :disabled="row.item.is_short_cached==0? true: false"
+                @click="addToNextPlay(row.item)"
+                slot="reference"
+                icon="el-icon-circle-plus"
+                circle
+              ></el-button>
             </el-popover>
           </template>
         </b-table>
@@ -48,6 +60,7 @@ export default {
           { key: 'title', label: '歌名' },
           { key: 'artist__name', label: '歌手' },
           { key: 'album__title', label: '专辑' },
+          { key: 'short_duration', label: '时长' },
           { key: 'actions', label: '' }
         ],
         query: '',
@@ -96,9 +109,15 @@ export default {
       })
     },
     addToNextPlay: function (music) {
-      axios.post(this.COMMON.httpURL + 'lists/current/next', {'music_id': music.id, 'user_id': parseInt(localStorage.user_id), 'short': 1})
+      axios.post(this.COMMON.httpURL + 'lists/current/next', { 'music_id': music.id, 'user_id': parseInt(localStorage.user_id), 'short': 1 })
         .then(response => {
-          // TODO 添加下一首播放
+          this.$store.commit('getCurrentList', this)
+        })
+    },
+    playNow: function (music) {
+      axios.post(this.COMMON.httpURL + 'lists/current/play-now', {'music_id': music.id, 'user_id': parseInt(localStorage.user_id), 'short': 1})
+        .then(response => {
+          this.$store.commit('getCurrentList', this)
         })
     }
   },

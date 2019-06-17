@@ -15,15 +15,16 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from django.views.generic.base import TemplateView
+from django.views.generic.base import TemplateView, RedirectView
 
 urlpatterns = [
+    path('lists/', include('list.urls')),
     path('musics/', include('music.urls')),
     path('friend/', include('friend.urls')),
     path('user/', include('login.urls')),
-    path('register', include('register.urls')),
     path('index/', TemplateView.as_view(template_name="index.html")),
     path('register/', include('register.urls')),
     path('musync/', include('musync_core.urls')),
     path('admin/', admin.site.urls),
+    path('', RedirectView.as_view(url='index/'))
 ]

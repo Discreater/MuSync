@@ -1,32 +1,27 @@
 <template>
   <div>
-    <div id="test-send">
-      <el-button @click="getDetail">add</el-button>
-    </div>
-    <div id="about">
-      When you have a great story about how your product or service was built to change lives, share it. The "About Us"
-      page is a great place for it to live, too. Good stories humanize your brand, providing context and meaning for your
-      product. What’s more, good stories are sticky -- which means people are more likely to connect with them and pass
-      them on.
-    </div>
+    <h1 id="about">Good {{ time }}!</h1>
   </div>
 </template>
 
 <script>
-import axios from 'axios'
 
 export default {
   name: 'about',
-  methods: {
-    getDetail: function () {
-      axios.get('http://192.168.1.102:8000/musync/5/results/')
-        .then(function (response) {
-          alert(response.data)
-        })
-        .catch(function (error) {
-          alert('Error!' + error)
-        })
+  computed: {
+    time () {
+      let date = new Date()
+      if (date.getHours() > 5 && date.getHours() <= 12) {
+        return 'morning'
+      } else if (date.getHours() > 12 && date.getHours() < 18) {
+        return 'afternoon'
+      } else {
+        return 'evening'
+      }
     }
+  },
+  methods: {
+
   }
 }
 </script>
