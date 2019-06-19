@@ -6,7 +6,7 @@
     </div>
     <div class="head-search test">
       <div class="search-frame test">
-        <el-input placeholder="请输入内容" v-model="search_input"></el-input>
+        <el-input clearable placeholder="请输入内容" v-model="search_input"></el-input>
       </div>
       <div class="search-button test">
         <el-button class="el-icon-search" circle type="warning" @click="search"></el-button>
