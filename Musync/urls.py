@@ -18,6 +18,7 @@ from django.urls import path, include
 from django.views.generic.base import TemplateView, RedirectView
 
 urlpatterns = [
+    path('chat/', include('chat.urls')),
     path('lists/', include('list.urls')),
     path('musics/', include('music.urls')),
     path('friend/', include('friend.urls')),

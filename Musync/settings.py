@@ -22,13 +22,15 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'r=bv=vy8f9ooj!v5oq2mgmu3edl_k1vc2bc8s^g()b79b8ne5*'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['*', ]
 
 # Application definition
 
 INSTALLED_APPS = [
+    'channels',
+    'chat',
     'musync_core.apps.MusyncCoreConfig',
     'corsheaders',
     'django.contrib.admin',
@@ -127,3 +129,13 @@ STATICFILES_DIRS = [
 ]
 
 CORS_ORIGIN_ALLOW_ALL = True
+
+ASGI_APPLICATION = 'Musync.routing.application'
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            'hosts': [('127.0.0.1', 6379)],
+        }
+    }
+}

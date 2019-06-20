@@ -22,6 +22,43 @@ Vue.prototype.COMMON = global
 
 Vue.config.productionTip = true
 
+function getList (state, vm) {
+  if (localStorage.user_id) {
+    axios
+      .get(
+        vm.COMMON.httpURL +
+        'lists/current/all?user_id=' +
+        localStorage.user_id
+      )
+      .then(response => {
+        if (JSON.stringify(state.current_list) !== JSON.stringify(response.data.list)) {
+          state.current_list = response.data.list
+        }
+        if (JSON.stringify(state.list_state) !== JSON.stringify(response.data.state)) {
+          state.list_state = response.data.state
+        }
+      })
+      .catch(error => {
+        if (error.response) {
+          vm.$message({
+            showClose: true,
+            message: error.response.data.error,
+            type: 'error',
+            duration: 2000
+          })
+        } else {
+          vm.$message({
+            showClose: true,
+            message: '未知错误',
+            type: 'error',
+            duration: 2000
+          })
+          console.log(error)
+        }
+      })
+  }
+}
+
 const store = new Vuex.Store({
   state: {
     is_logined: false,
@@ -37,8 +74,19 @@ const store = new Vuex.Store({
       state.searchReq = req
       state.searchRes = res
     },
-    login (state) {
+    login (state, vm) {
       state.is_logined = true
+      if (localStorage.user_id) {
+        let userId = String(localStorage.user_id)
+        let chatSocket = new WebSocket('ws://' + window.location.host + '/ws/chat/' + userId + '/')
+        chatSocket.onmessage = function (e) {
+          let data = JSON.parse(e.data)
+          let message = data['message']
+          if (message === 'change') {
+            getList(state, vm)
+          }
+        }
+      }
     },
     logout (state) {
       state.is_logined = false
@@ -50,40 +98,7 @@ const store = new Vuex.Store({
       state.html_height = height
     },
     getCurrentList (state, vm) {
-      if (localStorage.user_id) {
-        axios
-          .get(
-            vm.COMMON.httpURL +
-            'lists/current/all?user_id=' +
-            localStorage.user_id
-          )
-          .then(response => {
-            if (JSON.stringify(state.current_list) !== JSON.stringify(response.data.list)) {
-              state.current_list = response.data.list
-            }
-            if (JSON.stringify(state.list_state) !== JSON.stringify(response.data.state)) {
-              state.list_state = response.data.state
-            }
-          })
-          .catch(error => {
-            if (error.response) {
-              vm.$message({
-                showClose: true,
-                message: error.response.data.error,
-                type: 'error',
-                duration: 2000
-              })
-            } else {
-              vm.$message({
-                showClose: true,
-                message: '未知错误',
-                type: 'error',
-                duration: 2000
-              })
-              console.log(error)
-            }
-          })
-      }
+      getList(state, vm)
     }
   }
 })

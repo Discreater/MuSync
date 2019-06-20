@@ -156,7 +156,35 @@ export default {
     },
     // 拖动进度条，改变当前时间，index是进度条改变时的回调函数的参数0-100之间，需要换算成实际时间
     changeCurrentTime (index) {
-      this.$refs.audio.currentTime = parseInt(index / 100 * this.audio.maxTime)
+      let newval = parseInt(index / 100 * this.audio.maxTime)
+      this.$refs.audio.currentTime = newval
+      if (localStorage.user_id) {
+        let p = {}
+        p.user_id = localStorage.user_id
+        p.newval = newval
+        axios.post(this.COMMON.httpURL + 'lists/current/change_time', p)
+          .then(responese => {
+            this.$store.commit('getCurrentList', this)
+          })
+          .catch(error => {
+            if (error.response) {
+              this.$message({
+                showClose: true,
+                message: error.response.data.error,
+                type: 'error',
+                duration: 2000
+              })
+            } else {
+              this.$message({
+                showClose: true,
+                message: '未知错误',
+                type: 'error',
+                duration: 2000
+              })
+              console.log(error)
+            }
+          })
+      }
     },
     initVolumeSlider () {
       this.sliderVolume = this.$refs.audio.volume * 100
@@ -170,7 +198,20 @@ export default {
       if (this.list.length !== 0) {
         axios.get(this.COMMON.httpURL + 'lists/current/play?user_id=' + localStorage.user_id)
       }
-      this.$refs.audio.play()
+      let promise = this.$refs.audio.play()
+      if (promise !== undefined) {
+        promise.then(_ => {
+          this.$refs.audio.play()
+        }).catch(error => {
+          console.log(error)
+          this.audio.playing = false
+          this.$message({
+            showClose: true,
+            message: '浏览器不允许自动播放，请手动播放',
+            duration: 2000
+          })
+        })
+      }
     },
     // 暂停音频
     pause () {

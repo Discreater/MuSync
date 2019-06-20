@@ -3,8 +3,31 @@ from django.views.decorators.csrf import csrf_exempt
 from musync_core.models import User, CurrentList, Track, CurrentListHasTrack
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils.timezone import now, localtime
+from chat.consumers import list_change
 import datetime
 import json
+
+
+@csrf_exempt
+def change_current_time(request):
+    if request.method == 'POST':
+        # TODO session验证
+        try:
+            dic = eval(request.body)
+            if 'user_id' in dic and 'newval' in dic:
+                user_id = int(dic['user_id'])
+                newval = int(dic['newval'])
+                pause_time = now()
+                begin_time = pause_time - datetime.timedelta(seconds=newval)
+                current_list = CurrentList.objects.get(user_id=user_id)
+                current_list.begin_time = begin_time
+                current_list.pause_time = pause_time
+                current_list.save()
+                list_change(user_id)
+                return JsonResponse({})
+        except ObjectDoesNotExist:
+            return JsonResponse({'error': '请求参数非法'}, status=401)
+    return JsonResponse({'error': '方法错误'}, status=401)
 
 
 @csrf_exempt
@@ -26,6 +49,7 @@ def delete_by_order(request):
                         current_list.playing_order = 1
                     current_list.begin_time = now()
                     current_list.save()
+                list_change(user_id)
                 return JsonResponse({})
             except ObjectDoesNotExist:
                 return JsonResponse({'error': '请求参数非法'}, status=401)
@@ -36,7 +60,7 @@ def delete_by_order(request):
 @csrf_exempt
 def pause(request):
     if request.method == 'GET':
-        user_id = request.GET.get('user_id', default=0)
+        user_id = int(request.GET.get('user_id', default=0))
         if user_id != 0:
             try:
                 current_list = CurrentList.objects.filter(user__id=user_id)
@@ -47,6 +71,7 @@ def pause(request):
                     current_list.is_active = 0
                     current_list.pause_time = now()
                     current_list.save()
+                list_change(user_id)
                 return JsonResponse({})
             except ObjectDoesNotExist:
                 return JsonResponse(status=401)
@@ -56,7 +81,7 @@ def pause(request):
 @csrf_exempt
 def play(request):
     if request.method == 'GET':
-        user_id = request.GET.get('user_id', default=0)
+        user_id = int(request.GET.get('user_id', default=0))
         if user_id != 0:
             try:
                 current_list = CurrentList.objects.filter(user__id=user_id)
@@ -67,6 +92,7 @@ def play(request):
                     current_list.is_active = 1
                     current_list.begin_time = now() - (current_list.pause_time - current_list.begin_time)
                     current_list.save()
+                list_change(user_id)
                 return JsonResponse({})
             except ObjectDoesNotExist:
                 return JsonResponse(status=401)
@@ -110,7 +136,8 @@ def play_now(request):
         try:
             dic = eval(request.body)
             if 'music_id' in dic and 'user_id' in dic and 'short' in dic:
-                user = User.objects.get(id=dic['user_id'])
+                user_id = int(dic['user_id'])
+                user = User.objects.get(id=user_id)
                 track = Track.objects.get(id=dic['music_id'])
                 is_short = int(dic['short'])
                 try:  # 用户存在current_list
@@ -191,6 +218,7 @@ def play_now(request):
                 current_list = CurrentList.objects.get(user=user)
                 r_list = CurrentListHasTrack.objects.filter(current_list=current_list).values()
                 dic = CurrentList.objects.filter(user=user).values()[0]
+                list_change(user_id)
                 return JsonResponse({'list': list(r_list), 'state': dic})
             else:
                 return JsonResponse({'error': '请求参数非法'}, status=401)
@@ -206,7 +234,8 @@ def add_to_next_play(request):
         try:
             dic = eval(request.body)
             if 'music_id' in dic and 'user_id' in dic and 'short' in dic:
-                user = User.objects.get(id=dic['user_id'])
+                user_id = int(dic['user_id'])
+                user = User.objects.get(id=user_id)
                 track = Track.objects.get(id=dic['music_id'])
                 is_short = int(dic['short'])
                 try:  # 用户存在current_list
@@ -271,13 +300,14 @@ def add_to_next_play(request):
                 current_list = CurrentList.objects.get(user=user)
                 r_list = CurrentListHasTrack.objects.filter(current_list=current_list).values()
                 dic = CurrentList.objects.filter(user=user).values()[0]
+                list_change(user_id)
                 return JsonResponse({'list': list(r_list), 'state': dic})
             else:
                 return JsonResponse({'error': '请求参数非法'}, status=401)
         except ObjectDoesNotExist:
             return JsonResponse({'error': '请求参数非法'}, status=401)
     elif request.method == 'GET':
-        user_id = request.GET.get('user_id', default=0)
+        user_id = int(request.GET.get('user_id', default=0))
         if user_id == 0:
             return JsonResponse({'error': '请求参数非法'}, status=401)
         current_list = CurrentList.objects.get(user_id=user_id)
@@ -290,21 +320,5 @@ def add_to_next_play(request):
         current_list.save()
         r_list = CurrentListHasTrack.objects.filter(current_list=current_list).values()
         dic = CurrentList.objects.filter(user_id=user_id).values()[0]
+        list_change(user_id)
         return JsonResponse({'list': list(r_list), 'state': dic})
-
-
-def get_current_track(current_list):
-    c_track = CurrentListHasTrack.objects.filter(current_list=current_list, is_playing=1)
-    if c_track.exists():
-        track = c_track[0].track
-        while True:
-            if c_track[0].is_short == 1:
-                duration = track.short_duration
-            else:
-                duration = track.duration
-            if c_track[0].play_time + datetime.timedelta(seconds=duration) > now():
-                return track
-            c_track = CurrentListHasTrack.objects.filter(current_list=current_list, order=c_track[0].order + 1)
-            if not c_track.exists():
-                c_track = CurrentListHasTrack.objects.filter(current_list=current_list, order=1)
-            track = c_track[0].track

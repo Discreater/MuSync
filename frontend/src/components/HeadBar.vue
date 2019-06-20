@@ -200,7 +200,7 @@ export default {
               localStorage.user_id = response.data.user_id
               localStorage.name = this.login_form.name
               localStorage.password = this.login_form.password
-              this.$store.commit('login')
+              this.$store.commit('login', this)
               this.$message({
                 showClose: true,
                 message: '登录成功',
@@ -252,7 +252,7 @@ export default {
               localStorage.user_id = response.data.user_id
               localStorage.name = this.register_form.name
               localStorage.password = this.register_form.password
-              this.$store.commit('login')
+              this.$store.commit('login', this)
               this.$message({
                 showClose: true,
                 message: '注册成功',
@@ -321,9 +321,9 @@ export default {
         axios.post(this.COMMON.httpURL + 'user/login', { name: localStorage.name, password: localStorage.password })
           .then(response => {
             localStorage.user_id = response.data.user_id
-            this.$store.commit('login')
+            this.$store.commit('login', this)
+            this.$store.commit('getCurrentList', this)
           })
-        this.$store.commit('getCurrentList', this)
       }
     }
   }
