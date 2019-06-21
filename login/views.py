@@ -1,8 +1,43 @@
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from musync_core.models import User
 import json
 from django.core.exceptions import ObjectDoesNotExist
+
+
+@csrf_exempt
+def change_info(request):
+    if request.method == 'POST':
+        try:
+            # TODO 验证request.body
+            user = User.objects.get(id=request.POST.get('id', 0))
+            user.name = request.POST.get('name', 0)
+            user.email = request.POST.get('email', '')
+            user.gender = request.POST.get('gender', '')
+            user.phone = request.POST.get('phone', '')
+            user.save()
+            return JsonResponse({})
+        except ObjectDoesNotExist:
+            return JsonResponse({'error': '请求参数非法'}, status=401)
+    return JsonResponse({'error': '方法错误'}, status=401)
+
+
+@csrf_exempt
+def fetch_info(request, user_id):
+    if request.method == 'GET':
+        if user_id > 0:
+            try:
+                user = User.objects.get(id=user_id)
+                dic = user.__dict__
+                dic.pop('_state')
+                birth_date = dic['birth_date']
+                if birth_date is not None:
+                    dic['birth_date'] = birth_date.isoformat()
+                return JsonResponse({'info': dic})
+            except ObjectDoesNotExist:
+                return JsonResponse({'error': '请求参数非法1'}, status=401)
+        return JsonResponse({'error': '请求参数非法'}, status=401)
+    return JsonResponse({'error': '方法错误'}, status=401)
 
 
 @csrf_exempt
@@ -37,5 +72,3 @@ def logout(request):
             # 删除整个会话
             request.session.flush()
     return HttpResponse()
-
-

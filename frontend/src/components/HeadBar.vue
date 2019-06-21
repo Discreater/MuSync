@@ -2,7 +2,13 @@
   <div class="head-bar">
     <div class="head-icon test">
       <span style="font-size: 40px;color: #562222;text-shadow: 4px 5px #a96767;">MuSync</span>
-      <el-button style="margin-left: 9px" @click="refresh" class="el-icon-refresh" circle type="primary"></el-button>
+      <el-button
+        style="margin-left: 9px"
+        @click="refresh"
+        class="el-icon-refresh"
+        circle
+        type="primary"
+      ></el-button>
     </div>
     <div class="head-search test">
       <div class="search-frame test">
@@ -14,13 +20,16 @@
     </div>
     <div class="head-user-info test">
       <div v-if="is_logined" class="logined">
+        <span class="user-name">Hello, {{ userName }}</span>
         <el-dropdown>
           <span class="el-drop-down-link">
             <b-img v-bind="user_icon_props" rounded="circle" height="40"></b-img>
             <i class="el-icon-arrow-down" style="z-index:100; margin-left: 5px"></i>
           </span>
           <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item>个人信息</el-dropdown-item>
+            <el-dropdown-item>
+              <p @click="onUserInfo">个人信息</p>
+            </el-dropdown-item>
             <el-dropdown-item>
               <p @click="logout">注销</p>
             </el-dropdown-item>
@@ -118,6 +127,7 @@ export default {
       }
     }
     return {
+      userName: '',
       user_icon_props: {
         blank: true,
         blankColor: '#cc9'
@@ -163,12 +173,22 @@ export default {
       }
     }
   },
+  watch: {
+    is_logined: function (val) {
+      if (val === true) {
+        this.userName = localStorage.name
+      }
+    }
+  },
   computed: {
     is_logined () {
       return this.$store.state.is_logined
     }
   },
   methods: {
+    onUserInfo: function () {
+      this.$router.push('/info')
+    },
     refresh: function () {
       this.$store.commit('getCurrentList', this)
     },
@@ -313,6 +333,7 @@ export default {
         duration: 1500
       })
       axios.delete(this.COMMON.httpURL + 'user/logout')
+      this.$router.push('/')
     }
   },
   created: function () {
@@ -331,6 +352,11 @@ export default {
 </script>
 
 <style scoped>
+.user-name {
+  color: #c7c273;
+  margin-right: 23px;
+  text-shadow: 1px 1px black;
+}
 .head-bar {
   height: 100%;
   display: flex;
